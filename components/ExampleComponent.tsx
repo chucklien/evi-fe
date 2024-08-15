@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from '@/components/Select';
 import { Waveform } from '@/components/Waveform';
-import MessageDisplay from './MessageDisplay';
 
 function getTop3Expressions(
   expressionOutputs: Hume.empathicVoice.EmotionScores,
@@ -24,7 +23,7 @@ function getTop3Expressions(
     .slice(0, 3)
     .map(([key, value]) => ({ name: key, score: value as number }));
 }
-
+// @ts-ignore
 export const ExampleComponent = () => {
   const {
     connect,
@@ -220,12 +219,28 @@ export const ExampleComponent = () => {
                   <div className={'text-sm font-medium uppercase'}>
                     All messages ({messages.length})
                   </div>
-                  <MessageDisplay
+                  <div
                     className={
                       'w-full bg-neutral-800 font-mono text-sm text-white'
                     }
-                    messages={messages}
-                  />
+                  >
+                      {messages.map((message, index) => {
+                        if (message.type === 'user_message') {
+                          return (
+                            <div key={index}>
+                              <strong>Client:</strong> {message.message.content}
+                            </div>
+                          );
+                        } else if (message.type === 'assistant_message') {
+                          return (
+                            <div key={index}>
+                              <strong>Helper:</strong> {message.message.content}
+                            </div>
+                          );
+                        }
+                        return null; // Ignore other message types
+                      })}
+                  </div>
                 </div>
 
                 <div>
