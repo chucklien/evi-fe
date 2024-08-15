@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/Select';
 import { Waveform } from '@/components/Waveform';
+import MessageDisplay from './MessageDisplay';
 
 function getTop3Expressions(
   expressionOutputs: Hume.empathicVoice.EmotionScores,
@@ -219,13 +220,12 @@ export const ExampleComponent = () => {
                   <div className={'text-sm font-medium uppercase'}>
                     All messages ({messages.length})
                   </div>
-                  <textarea
+                  <MessageDisplay
                     className={
                       'w-full bg-neutral-800 font-mono text-sm text-white'
                     }
-                    value={JSON.stringify(messages, null, 0)}
-                    readOnly
-                  ></textarea>
+                    messages={messages}
+                  />
                 </div>
 
                 <div>
