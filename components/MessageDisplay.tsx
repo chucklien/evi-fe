@@ -1,8 +1,22 @@
 import React from 'react';
 
-const MessageDisplay = ({ messages }) => {
+interface Message {
+  type: string;
+  message: {
+    role: string;
+    content: string;
+  };
+  // Add other fields if necessary
+}
+
+interface Props {
+  messages: Message[];
+  className?: string;
+}
+
+const MessageDisplay = ({ messages, className }: Props) => {
   return (
-    <div>
+    <div className={className}>
       {messages.map((message, index) => {
         if (message.type === 'user_message') {
           return (
