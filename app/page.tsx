@@ -2,7 +2,7 @@ import { fetchAccessToken } from 'hume';
 import dynamic from 'next/dynamic';
 import type { FC, PropsWithChildren } from 'react';
 
-import { Voice } from '@/components/Voice';
+import { UsageLimit } from '@/components/UsageLimit';
 
 const NoOp: FC<PropsWithChildren<Record<never, never>>> = ({ children }) => (
   <>{children}</>
@@ -13,7 +13,9 @@ const NoSSR = dynamic(
   { ssr: false },
 );
 
+
 export default async function Home() {
+  // Fetch the access token on the server side
   const accessToken = await fetchAccessToken({
     apiKey: process.env.HUME_API_KEY || '',
     secretKey: process.env.HUME_SECRET_KEY || '',
@@ -21,15 +23,15 @@ export default async function Home() {
 
   return (
     <div className={'p-6'}>
-      <h1 className={'my-4 text-lg font-medium'}>Hume EVI React Example</h1>
+      <h1 className={'my-4 text-lg font-medium'}>🍋 HeartSpace | Voice</h1>
 
-      <NoSSR>
-        {accessToken ? (
-          <Voice accessToken={accessToken} />
-        ) : (
-          <div>Missing API Key</div>
-        )}
-      </NoSSR>
+      {accessToken ? (
+        <NoSSR>
+          <UsageLimit accessToken={accessToken} />
+        </NoSSR>
+      ) : (
+        <div>Missing API Key</div>
+      )}
     </div>
   );
 }

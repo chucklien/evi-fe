@@ -7,8 +7,8 @@ import { cn } from '@/utils';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Hume EVI React Example',
-  description: 'An example Next.js app built with the EVI React SDK',
+  title: '🍋 HeartSapce | Voice',
+  description: 'A kind and empathetic voice when speaking with you.',
 };
 
 export default function RootLayout({
