@@ -53,6 +53,7 @@ export const ExampleComponent = () => {
     'user',
   );
   const [paused, setPaused] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   const togglePaused = useCallback(() => {
     if (paused) {
@@ -218,7 +219,21 @@ export const ExampleComponent = () => {
                 <div>
                   <div className={'text-sm font-medium uppercase'}>
                     All messages ({messages.length})
+                    <button
+                      className="border border-black p-2"
+                      onClick={() => setShowAll(prev => !prev)}
+                    >
+                      Show
+                    </button>
                   </div>
+                  {showAll &&
+                      <textarea
+                        className={
+                          'w-full bg-neutral-800 font-mono text-sm text-white'
+                        }
+                        value={JSON.stringify(messages, null, 0)}
+                        readOnly></textarea>
+                  }
                   <div
                     className={
                       'w-full bg-neutral-800 font-mono text-sm text-white'
