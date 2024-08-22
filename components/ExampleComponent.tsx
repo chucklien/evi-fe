@@ -3,7 +3,7 @@
 import { useVoice } from '@humeai/voice-react';
 import { SelectItem } from '@radix-ui/react-select';
 import type { Hume } from 'hume';
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState, useEffect } from 'react';
 import { match } from 'ts-pattern';
 
 import {
@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/Select';
 import { Waveform } from '@/components/Waveform';
+import usePrevious from '@/hooks/usePrevious';
 
 const Spinner: FC = () => (
   <div
@@ -54,6 +55,7 @@ export const ExampleComponent = () => {
     sendResumeAssistantMessage,
     sendPauseAssistantMessage,
     chatMetadata,
+    sendSessionSettings,
   } = useVoice();
 
   const [textValue, setTextValue] = useState('');
@@ -88,6 +90,15 @@ export const ExampleComponent = () => {
       })
       .filter(Boolean);
   }, [messages]);
+
+  const prevChatGroupId = usePrevious(chatMetadata?.chatGroupId);
+  const [isUpdateSession, setIsUpdateSession] = useState(false);
+  useEffect(() => {
+    if (prevChatGroupId !== chatMetadata?.chatGroupId && chatMetadata?.chatGroupId) {
+      console.log('sendSessionSettings');
+      sendSessionSettings({ customSessionId: chatMetadata?.chatGroupId });
+    }
+  }, [prevChatGroupId, chatMetadata?.chatGroupId]);
 
   const isReady = !!chatMetadata?.chatGroupId;
   const callDuration = (

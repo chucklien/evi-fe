@@ -12,7 +12,7 @@ export const Voice = ({ accessToken }: { accessToken: string }) => {
       auth={{ type: 'accessToken', value: accessToken }}
       hostname={process.env.NEXT_PUBLIC_HUME_VOICE_HOSTNAME || 'api.hume.ai'}
       messageHistoryLimit={10}
-      onMessage={(message) => {
+      onMessage={message => {
         // eslint-disable-next-line no-console
         console.log('message', message);
       }}
@@ -27,14 +27,14 @@ export const Voice = ({ accessToken }: { accessToken: string }) => {
               .safeParse(JSON.parse(toolCall.parameters));
 
             if (args.success === false) {
-              throw new Error(
-                'Tool response did not match the expected weather tool schema',
-              );
+              throw new Error('Tool response did not match the expected weather tool schema');
             }
 
             const location: unknown = await fetch(
-              `https://geocode.maps.co/search?q=${String(args.data.location)}&api_key=${process.env.NEXT_PUBLIC_GEOCODE_API_KEY}`,
-            ).then((res) => res.json());
+              `https://geocode.maps.co/search?q=${String(args.data.location)}&api_key=${
+                process.env.NEXT_PUBLIC_GEOCODE_API_KEY
+              }`,
+            ).then(res => res.json());
 
             const locationResults = z
               .array(
@@ -46,16 +46,16 @@ export const Voice = ({ accessToken }: { accessToken: string }) => {
               .safeParse(location);
 
             if (locationResults.success === false) {
-              throw new Error(
-                'Location results did not match the expected schema',
-              );
+              throw new Error('Location results did not match the expected schema');
             }
             const { lat, lon } = locationResults.data[0];
-            const pointMetadataEndpoint: string = `https://api.weather.gov/points/${parseFloat(lat).toFixed(3)},${parseFloat(lon).toFixed(3)}`;
+            const pointMetadataEndpoint: string = `https://api.weather.gov/points/${parseFloat(
+              lat,
+            ).toFixed(3)},${parseFloat(lon).toFixed(3)}`;
 
             const result: unknown = await fetch(pointMetadataEndpoint, {
               method: 'GET',
-            }).then((res) => res.json());
+            }).then(res => res.json());
 
             const json = z
               .object({
@@ -65,16 +65,12 @@ export const Voice = ({ accessToken }: { accessToken: string }) => {
               })
               .safeParse(result);
             if (json.success === false) {
-              throw new Error(
-                'Point metadata did not match the expected schema',
-              );
+              throw new Error('Point metadata did not match the expected schema');
             }
             const { properties } = json.data;
             const { forecast: forecastUrl } = properties;
 
-            const forecastResult: unknown = await fetch(forecastUrl).then(
-              (res) => res.json(),
-            );
+            const forecastResult: unknown = await fetch(forecastUrl).then(res => res.json());
 
             const forecastJson = z
               .object({
@@ -107,7 +103,7 @@ export const Voice = ({ accessToken }: { accessToken: string }) => {
         }
       }, [])}
       configId={process.env.NEXT_PUBLIC_HUME_VOICE_WEATHER_CONFIG_ID}
-      onClose={(event) => {
+      onClose={event => {
         const niceClosure = 1000;
         const code = event.code;
 
@@ -118,7 +114,6 @@ export const Voice = ({ accessToken }: { accessToken: string }) => {
       }}
       sessionSettings={{
         type: 'session_settings',
-        builtinTools: [{ name: 'web_search' }],
       }}
     >
       <ExampleComponent />
